@@ -85,9 +85,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
         } else {
           this.spinner.hide();
           this.loggerService.log('response', response);
-          localStorage.setItem('user_token', response.token);
+          localStorage.setItem('user_token', response.accessToken);
           localStorage.setItem('user_id', response.id);
-          localStorage.setItem('user_name', response.name);
+          localStorage.setItem('user_name', response.email);
           localStorage.setItem('user_username', response.username);
           this.router.navigate([this.returnUrl]);
         }

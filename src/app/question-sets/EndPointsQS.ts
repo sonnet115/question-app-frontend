@@ -4,5 +4,5 @@ export class EndPointsQS {
   private baseUrl = environment.base_url;
 
   public readonly createQS = this.baseUrl + 'api/question-set/create';
-  public readonly getQS = this.baseUrl + 'api/question-set/get/5';
+  public readonly getQS = this.baseUrl + 'api/question-set/get';
 }

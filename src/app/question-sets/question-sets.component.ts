@@ -45,8 +45,7 @@ export class QuestionSetsComponent implements OnInit {
   saveQuestionSet(questionSetName: string) {
     this.spinner.show();
     const data = {
-      'name': questionSetName,
-      'userID': 5
+      'name': questionSetName
     };
     this.apiService.create(data).subscribe((response: any) => {
         this.spinner.hide();
