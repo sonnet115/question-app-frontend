@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {CategoryApiManagerService} from "../category-api-manager.service";
-import {LoggerService} from "../../shared/logger.service";
-import {NgxSpinnerService} from "ngx-spinner";
-import {HttpClient} from "@angular/common/http";
-import {EndPoints} from "../EndPoints";
+import {CategoryApiManagerService} from '../category-api-manager.service';
+import {LoggerService} from '../../shared/logger.service';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {HttpClient} from '@angular/common/http';
+import {EndPoints} from '../EndPoints';
 
 class DataTablesResponse {
   data: any[];
@@ -32,7 +32,7 @@ export class ManageCategoryComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.updateContainer = "hidden";
+    this.updateContainer = 'hidden';
     this.getParentCategory();
     const that = this;
 
@@ -65,18 +65,18 @@ export class ManageCategoryComponent implements OnInit, AfterViewInit {
   createCategory(name: string, parentCat: string) {
     this.spinner.show();
     const data = {
-      "name": name,
-      "parentID": parentCat
-    }
+      'name': name,
+      'parentID': parentCat
+    };
     this.apiService.createCategory(data).subscribe((response: any) => {
         this.spinner.hide();
-        console.log(response)
+        console.log(response);
       },
       error => {
         this.spinner.hide();
         this.loggerService.log('error', error);
       }
-    )
+    );
   }
 
   getParentCategory() {
@@ -84,13 +84,13 @@ export class ManageCategoryComponent implements OnInit, AfterViewInit {
     this.apiService.getParentCategory().subscribe((response: any) => {
         this.spinner.hide();
         this.parentCategories = response;
-        console.log(this.categories)
+        console.log(this.categories);
       },
       error => {
         this.spinner.hide();
         this.loggerService.log('error', error);
       }
-    )
+    );
   }
 
   ngAfterViewInit(): void {
@@ -101,26 +101,26 @@ export class ManageCategoryComponent implements OnInit, AfterViewInit {
     this.spinner.show();
     this.apiService.getCatById(id).subscribe((response: any) => {
         this.spinner.hide();
-        this.updateContainer = "show";
+        this.updateContainer = 'show';
         this.category = response;
-        console.log(response)
+        console.log(response);
       },
       error => {
         this.spinner.hide();
         this.loggerService.log('error', error);
       }
-    )
-    console.log(id)
+    );
+    console.log(id);
   }
 
   updateCategory(name: string, parentID: string, id: string) {
     const data = {
-      "name": name,
-      "parentID": parentID
-    }
+      'name': name,
+      'parentID': parentID
+    };
     this.apiService.updateCategory(data, id).subscribe((response: any) => {
         this.spinner.hide();
-        this.updateContainer = "hidden";
+        this.updateContainer = 'hidden';
         this.category = null;
         console.log(this.updateContainer);
         console.log(response);
@@ -129,6 +129,6 @@ export class ManageCategoryComponent implements OnInit, AfterViewInit {
         this.spinner.hide();
         console.log(error);
       }
-    )
+    );
   }
 }

@@ -6,7 +6,7 @@ import {
   HashLocationStrategy
 } from '@angular/common';
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule, HttpClient, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {Routes, RouterModule} from '@angular/router';
 
@@ -52,6 +52,7 @@ import {NgxSpinnerModule} from 'ngx-spinner';
 import {EndPoints} from './category/EndPoints';
 import {DataTablesModule} from 'angular-datatables';
 import {QuestionSetsComponent} from './question-sets/question-sets.component';
+import {EndPointsQS} from './question-sets/EndPointsQS';
 
 registerLocaleData(localeFr);
 
@@ -95,13 +96,15 @@ registerLocaleData(localeFr);
       }
     }),
     NgxSpinnerModule,
-    DataTablesModule
+    DataTablesModule,
+    ReactiveFormsModule
   ],
   providers: [
     {provide: LOCALE_ID, useValue: 'fr-FR'},
     CommonEndPoints,
     CommonService,
     EndPoints,
+    EndPointsQS,
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG

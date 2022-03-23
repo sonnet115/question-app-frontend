@@ -1,49 +1,54 @@
-<p>question-sets works!</p>
-<div class="container">
-  <div class="row">
-    <div class="col-md-4" style="border: 1px solid red">
-      <h1>question set 1</h1>
-    </div>
-
-    <div class="col-md-4" style="border: 1px solid red">
-      <h1>question set 1</h1>
-    </div>
-
-    <div class="col-md-4" style="border: 1px solid red">
-      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-        Open modal
-      </button>
-
-      <!-- The Modal -->
-      <div class="modal fade" id="myModal">
-        <div class="modal-dialog modal-xl">
-          <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-              <h4 class="modal-title">Modal Heading</h4>
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-              Modal body..
-            </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-
-          </div>
+<div class="row">
+  <div class="col-sm-3 m-t-20" *ngFor="let questionSet of questionSets">
+    <div class="bg-success shadow c_border_radius c_box_items card-body">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h3 class="font-weight-bold text-white">{{questionSet.name}}</h3>
+          <h5 class="text-dark">5000</h5>
+        </div>
+      </div>
+      <div class="row" style="margin-bottom: -20px;">
+        <div class="col-sm-6 ">
+          <p class=" font-weight-bold"><i class="fa fa-trash"></i></p>
+        </div>
+        <div class="col-sm-6 ">
+          <p class="font-weight-bold" style="text-align: right"><i class="fa fa-edit"></i></p>
         </div>
       </div>
     </div>
-
-
-
-
-
-
   </div>
 </div>
+
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Question Set</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <div class="input-group">
+        <input class="form-control" placeholder="Enter Question Set Name" #questionSetName>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="saveQuestionSet(questionSetName.value)">Save</button>
+  </div>
+</ng-template>
+
+<div class="row">
+  <div class="col-sm-3 m-t-20" (click)="open(content)" style="cursor: pointer">
+    <div class="bg-danger shadow c_border_radius c_box_items card-body">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h4 class="font-weight-bold text-white ">Create</h4>
+          <h2 class="font-weight-bold text-white icon-Add"></h2>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">{{'processing' | translate}}</p>
+</ngx-spinner>
