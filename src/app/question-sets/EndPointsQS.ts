@@ -5,4 +5,8 @@ export class EndPointsQS {
 
   public readonly createQS = this.baseUrl + 'api/question-set/create';
   public readonly getQS = this.baseUrl + 'api/question-set/get';
+  public readonly updateQSet = this.baseUrl + 'api/question-set/update/';
+  public readonly getQSetById = this.baseUrl + 'api/question-set/get/';
+  public readonly deleteQSet = this.baseUrl + 'api/question-set/delete/';
+
 }
