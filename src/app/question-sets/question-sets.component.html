@@ -9,7 +9,7 @@
       </div>
       <div class="row" style="margin-bottom: -20px;">
         <div class="col-sm-6 ">
-          <p class=" font-weight-bold"  (click)="deleteQuestionSet(questionSet.id)"><i class="fa fa-trash"></i></p>
+          <p class=" font-weight-bold" (click)="deleteQuestionSet(questionSet.id)"><i class="fa fa-trash"></i></p>
         </div>
         <div class="col-sm-6 ">
           <p class="font-weight-bold" style="text-align: right" (click)="open(updateContent)"
@@ -41,20 +41,25 @@
 
 <!--Update modal-->
 <ng-template #updateContent let-modal>
-  <div class="modal-header" >
+  <div class="modal-header">
     <h4 class="modal-title" id="modal-edit-content">Update Question Set</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
   </div>
   <div class="modal-body">
     <div class="mb-3">
       <div class="input-group">
-        <input class="form-control" placeholder="Enter Question Set Name" value="{{questionSetsById.name}}" #name>
-        <input class="form-control" placeholder="Enter Question Set id" value="{{questionSetsById.id}}" #questionSetId>
+        <input class="form-control" type="text" placeholder="Enter Question Set Name" value="{{questionSetsById.name}}"
+               #name>
+        <input class="form-control" type="hidden" placeholder="Enter Question Set id" value="{{questionSetsById.id}}"
+               #questionSetId>
       </div>
     </div>
+    <alert fade="true" ></alert>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="updateQuestionSet(name.value, questionSetId.value)">Update</button>
+    <button type="button" class="btn btn-outline-dark" (click)="updateQuestionSet(name.value, questionSetId.value)">
+      Update
+    </button>
   </div>
 </ng-template>
 

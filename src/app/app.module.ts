@@ -53,6 +53,7 @@ import {EndPoints} from './category/EndPoints';
 import {DataTablesModule} from 'angular-datatables';
 import {QuestionSetsComponent} from './question-sets/question-sets.component';
 import {EndPointsQS} from './question-sets/EndPointsQS';
+import {AlertModule} from './dashboards/_alert';
 
 registerLocaleData(localeFr);
 
@@ -68,37 +69,38 @@ registerLocaleData(localeFr);
     ManageCategoryComponent,
     QuestionSetsComponent
   ],
-  imports: [
-    CommonModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    HttpClientModule,
-    NgbModule,
-    ToastrModule.forRoot(),
-    RouterModule.forRoot(Approutes),
-    PerfectScrollbarModule,
-    Ng2SearchPipeModule,
-    NgMultiSelectDropDownModule.forRoot(),
-    AgmCoreModule.forRoot({apiKey: 'AIzaSyBUb3jDWJQ28vDJhuQZxkC0NXr_zycm8D0'}),
-    DragDropModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: httpTranslateLoader,
-        deps: [HttpClient],
-      },
-      defaultLanguage: 'en'
-    }),
-    MomentModule.forRoot({
-      relativeTimeThresholdOptions: {
-        'm': 59
-      }
-    }),
-    NgxSpinnerModule,
-    DataTablesModule,
-    ReactiveFormsModule
-  ],
+    imports: [
+        CommonModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        HttpClientModule,
+        NgbModule,
+        ToastrModule.forRoot(),
+        RouterModule.forRoot(Approutes),
+        PerfectScrollbarModule,
+        Ng2SearchPipeModule,
+        NgMultiSelectDropDownModule.forRoot(),
+        AgmCoreModule.forRoot({apiKey: 'AIzaSyBUb3jDWJQ28vDJhuQZxkC0NXr_zycm8D0'}),
+        DragDropModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: httpTranslateLoader,
+                deps: [HttpClient],
+            },
+            defaultLanguage: 'en'
+        }),
+        MomentModule.forRoot({
+            relativeTimeThresholdOptions: {
+                'm': 59
+            }
+        }),
+        NgxSpinnerModule,
+        DataTablesModule,
+        ReactiveFormsModule,
+        AlertModule
+    ],
   providers: [
     {provide: LOCALE_ID, useValue: 'fr-FR'},
     CommonEndPoints,

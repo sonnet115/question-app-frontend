@@ -4,6 +4,7 @@ import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {QsApiManagerService} from './qs-api-manager.service';
 import {number} from 'ngx-custom-validators/src/app/number/validator';
+import {AlertService} from '../dashboards/_alert';
 
 @Component({
   selector: 'app-question-sets',
@@ -14,10 +15,13 @@ export class QuestionSetsComponent implements OnInit {
   closeResult = '';
   questionSets: any;
   questionSetsById: any;
+  showMsg = false;
+
 
   constructor(private modalService: NgbModal,
               private spinner: NgxSpinnerService,
-              private apiService: QsApiManagerService) {
+              private apiService: QsApiManagerService,
+              private alertService: AlertService) {
   }
 
   open(content) {
@@ -80,7 +84,9 @@ export class QuestionSetsComponent implements OnInit {
     };
     this.apiService.updateQuestionSet(data, quesId).subscribe((response: any) => {
         this.spinner.hide();
+        this.alertService.success(response.message, {autoClose: true});
         console.log(response);
+        this.getQuestionSet();
       },
       error => {
         this.spinner.hide();
