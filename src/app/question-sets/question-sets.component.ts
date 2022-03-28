@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {QsApiManagerService} from './qs-api-manager.service';
@@ -16,9 +16,11 @@ export class QuestionSetsComponent implements OnInit {
   questionSets: any;
   questionSetsById: any;
   showMsg = false;
-
+  questionSetData: FormGroup;
+  submitted = false;
 
   constructor(private modalService: NgbModal,
+              private formBuilder: FormBuilder,
               private spinner: NgxSpinnerService,
               private apiService: QsApiManagerService,
               private alertService: AlertService) {
@@ -33,6 +35,14 @@ export class QuestionSetsComponent implements OnInit {
   ngOnInit(): void {
     this.getQuestionSet();
     this.questionSetsById = null;
+
+    this.questionSetData = this.formBuilder.group({
+      name: ['', [Validators.required]],
+    });
+  }
+
+  get fields() {
+    return this.questionSetData.controls;
   }
 
   getQuestionSet() {
@@ -49,14 +59,20 @@ export class QuestionSetsComponent implements OnInit {
   }
 
 
-  saveQuestionSet(questionSetName: string) {
+  saveQuestionSet() {
     this.spinner.show();
-    const data = {
-      'name': questionSetName
-    };
-    this.apiService.create(data).subscribe((response: any) => {
+    this.submitted = true;
+
+    if (this.questionSetData.invalid) {
+      this.spinner.hide();
+      return;
+    }
+
+    this.apiService.create(this.questionSetData.value).subscribe((response: any) => {
         this.spinner.hide();
         console.log(response);
+        this.alertService.success(response.message);
+        this.questionSetData.reset({name: ''});
       },
       error => {
         this.spinner.hide();
