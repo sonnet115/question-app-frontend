@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {NgxSpinnerService} from 'ngx-spinner';
@@ -14,6 +14,8 @@ import {AlertService} from '../dashboards/_alert';
 export class QuestionSetsComponent implements OnInit {
   closeResult = '';
   questionSets: any;
+  questionSetName: any;
+  questionSetId: any;
   questionSetsById: any;
   showMsg = false;
   questionSetData: FormGroup;
@@ -30,7 +32,32 @@ export class QuestionSetsComponent implements OnInit {
   open(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', centered: true}).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      console.log(this.closeResult);
     });
+  }
+
+  confirmDelete(content, questionSetName, questionSetId) {
+    this.questionSetName = questionSetName;
+    this.questionSetId = questionSetId;
+
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title', centered: true}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      console.log(this.closeResult);
+    });
+  }
+
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return `with: ${reason}`;
+    }
   }
 
   ngOnInit(): void {
@@ -78,6 +105,7 @@ export class QuestionSetsComponent implements OnInit {
         console.log(response);
         this.alertService.success(response.message, {autoClose: true});
         this.questionSetData.reset({name: ''});
+        this.getQuestionSet();
         this.submitted = false;
       },
       error => {
@@ -86,12 +114,13 @@ export class QuestionSetsComponent implements OnInit {
     );
   }
 
-  editQuestionSet(questionSetId: number) {
+  editQuestionSet(questionSetId: number, updateContent: TemplateRef<any>) {
     this.spinner.show();
     this.apiService.getQuSetById(questionSetId).subscribe((response: any) => {
         this.spinner.hide();
         console.log(response);
         this.questionSetsById = response;
+
       },
       error => {
         this.spinner.hide();
@@ -127,6 +156,11 @@ export class QuestionSetsComponent implements OnInit {
     this.apiService.deleteQuestionSet(quesId).subscribe((response: any) => {
         this.spinner.hide();
         console.log(response);
+        this.alertService.success('Question set deleted ');
+        this.getQuestionSet();
+        setTimeout(() => {
+          this.modalService.dismissAll();
+        }, 5000);
       },
       error => {
         this.spinner.hide();
