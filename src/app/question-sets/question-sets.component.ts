@@ -18,6 +18,7 @@ export class QuestionSetsComponent implements OnInit {
   showMsg = false;
   questionSetData: FormGroup;
   submitted = false;
+  questionSetDataUpdate: FormGroup;
 
   constructor(private modalService: NgbModal,
               private formBuilder: FormBuilder,
@@ -37,6 +38,10 @@ export class QuestionSetsComponent implements OnInit {
     this.questionSetsById = null;
 
     this.questionSetData = this.formBuilder.group({
+      name: ['', [Validators.required]],
+    });
+
+    this.questionSetDataUpdate = this.formBuilder.group({
       name: ['', [Validators.required]],
     });
   }
@@ -71,8 +76,9 @@ export class QuestionSetsComponent implements OnInit {
     this.apiService.create(this.questionSetData.value).subscribe((response: any) => {
         this.spinner.hide();
         console.log(response);
-        this.alertService.success(response.message);
+        this.alertService.success(response.message, {autoClose: true});
         this.questionSetData.reset({name: ''});
+        this.submitted = false;
       },
       error => {
         this.spinner.hide();
@@ -93,16 +99,22 @@ export class QuestionSetsComponent implements OnInit {
     );
   }
 
-  updateQuestionSet(questionSetName: string, quesId: string) {
+  updateQuestionSet(quesId: string) {
     this.spinner.show();
-    const data = {
-      'name': questionSetName
-    };
-    this.apiService.updateQuestionSet(data, quesId).subscribe((response: any) => {
+    this.submitted = true;
+
+    if (this.questionSetDataUpdate.invalid) {
+      this.spinner.hide();
+      return;
+    }
+
+    this.apiService.updateQuestionSet(this.questionSetDataUpdate.value, quesId).subscribe((response: any) => {
         this.spinner.hide();
         this.alertService.success(response.message, {autoClose: true});
         console.log(response);
         this.getQuestionSet();
+        this.questionSetDataUpdate.reset({name: ''});
+        this.submitted = false;
       },
       error => {
         this.spinner.hide();

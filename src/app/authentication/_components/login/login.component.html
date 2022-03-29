@@ -23,10 +23,9 @@
               <input type="text" formControlName="username" class="form-control form-control-lg" name="username"
                      placeholder="Username"
                      [ngClass]="{ 'is-invalid': submitted && fields.username.errors }">
-                <div *ngIf="fields.username.errors.required">Username is required</div>
               </div>
             <div *ngIf="submitted && fields.username.errors" class="invalid-feedback">
-
+              <div *ngIf="fields.username.errors.required">Username is required</div>
             </div>
             <div class="input-group mb-3">
               <div class="input-group-prepend">

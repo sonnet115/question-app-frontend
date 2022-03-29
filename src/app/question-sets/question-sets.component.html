@@ -43,7 +43,7 @@
       </div>
 
       <div class="modal-footer">
-        <button type="submit" class="btn btn-outline-dark">Save</button>
+        <button type="submit" class="btn btn-outline-success">Create</button>
       </div>
     </form>
   </div>
@@ -58,21 +58,28 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')">X</button>
   </div>
   <div class="modal-body">
-    <div class="mb-3">
-      <div class="input-group">
-        <input class="form-control" type="text" placeholder="Enter Question Set Name" value="{{questionSetsById.name}}"
-               #name>
-        <input class="form-control" type="hidden" placeholder="Enter Question Set id" value="{{questionSetsById.id}}"
-               #questionSetId>
-      </div>
+    <div>
+      <form class="form-horizontal m-t-20" [formGroup]="questionSetDataUpdate"
+            (ngSubmit)="updateQuestionSet(questionSetsById.id)">
+        <div class="mb-3">
+          <div class="input-group">
+            <input formControlName="name" class="form-control form-control-lg" name="name"
+                   placeholder="Question Set Name"
+                   value="{{questionSetsById.name}}" [ngClass]="{ 'is-invalid': submitted && fields.name.errors }">
+            <div *ngIf="submitted && fields.name.errors" class="invalid-feedback">
+              <div *ngIf="fields.name.errors.required">Name is required</div>
+            </div>
+          </div>
+          <br>
+          <alert fade="true"></alert>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-outline-danger ">Update</button>
+        </div>
+      </form>
     </div>
-    <alert fade="true"></alert>
   </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="updateQuestionSet(name.value, questionSetId.value)">
-      Update
-    </button>
-  </div>
+
 </ng-template>
 
 
