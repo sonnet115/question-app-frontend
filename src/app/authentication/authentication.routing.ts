@@ -4,7 +4,6 @@ import {NotfoundComponent} from './_components/404/not-found.component';
 import {LockComponent} from './_components/lock/lock.component';
 import {LoginComponent} from './_components/login/login.component';
 import {SignupComponent} from './_components/signup/signup.component';
-import {ProfileComponent} from '../dashboards/profile/profile.component';
 import {PassResetComponent} from './_components/pass-reset/pass-reset.component';
 
 export const AuthenticationRoutes: Routes = [

@@ -3,8 +3,8 @@ import {Routes, RouterModule} from '@angular/router';
 import {FullComponent} from './layouts/full/full.component';
 import {BlankComponent} from './layouts/blank/blank.component';
 import {AuthGuard} from './_guards/auth.guard';
-import {ManageCategoryComponent} from "./category/manage-category/manage-category.component";
 import {QuestionSetsComponent} from './question-sets/question-sets.component';
+import {QuestionsComponent} from './questions/questions.component';
 
 export const Approutes: Routes = [
   {
@@ -27,10 +27,16 @@ export const Approutes: Routes = [
         path: 'manage-question-sets',
         component: QuestionSetsComponent,
         canActivate: [AuthGuard]
-      },
+      }
+    ]
+  },
+  {
+    path: '',
+    component: FullComponent,
+    children: [
       {
-        path: 'dashboard',
-        loadChildren: () => import('./dashboards/dashboard.module').then(m => m.DashboardModule),
+        path: 'manage-questions',
+        component: QuestionsComponent,
         canActivate: [AuthGuard]
       }
     ]

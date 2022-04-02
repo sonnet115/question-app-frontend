@@ -47,13 +47,12 @@ import {CommonEndPoints} from './shared/CommonEndPoints';
 import {LOCALE_ID} from '@angular/core';
 import {registerLocaleData} from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
-import {ManageCategoryComponent} from './category/manage-category/manage-category.component';
 import {NgxSpinnerModule} from 'ngx-spinner';
-import {EndPoints} from './category/EndPoints';
 import {DataTablesModule} from 'angular-datatables';
 import {QuestionSetsComponent} from './question-sets/question-sets.component';
 import {EndPointsQS} from './question-sets/EndPointsQS';
 import {AlertModule} from './dashboards/_alert';
+import { QuestionsComponent } from './questions/questions.component';
 
 registerLocaleData(localeFr);
 
@@ -66,8 +65,8 @@ registerLocaleData(localeFr);
     NavigationComponent,
     BreadcrumbComponent,
     SidebarComponent,
-    ManageCategoryComponent,
-    QuestionSetsComponent
+    QuestionSetsComponent,
+    QuestionsComponent
   ],
     imports: [
         CommonModule,
@@ -105,7 +104,6 @@ registerLocaleData(localeFr);
     {provide: LOCALE_ID, useValue: 'fr-FR'},
     CommonEndPoints,
     CommonService,
-    EndPoints,
     EndPointsQS,
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
