@@ -1,5 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormGroup, FormControl, FormArray, FormBuilder, Validators} from '@angular/forms';
+import {QsApiManagerService} from '../question-sets/qs-api-manager.service';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {AlertService} from '../dashboards/_alert';
+import {QApiManagerService} from './q-api-manager.service';
 
 @Component({
   selector: 'app-questions',
@@ -7,73 +11,44 @@ import {FormGroup, FormControl, FormArray, FormBuilder, Validators} from '@angul
   styleUrls: ['./questions.component.css']
 })
 export class QuestionsComponent implements OnInit {
-  /*qType: any;
-  questionForm: FormGroup;
-  showMultipleOptions: boolean;
-  questionOptions: any;
-  optionForm: FormGroup;
-
-  constructor(private fb: FormBuilder) {
-  }
-
-  ngOnInit(): void {
-    this.questionOptions = 1;
-
-    this.questionForm = this.fb.group({
-      question_text: ['', Validators.required],
-      qType: ['', Validators.required],
-      qOptions: this.fb.array([]),
-    });
-  }
-
-  get formControls() {
-    return this.questionForm.controls;
-  }
-
-  get qOptions(): FormArray {
-    return this.questionForm.get('qOptions') as FormArray;
-  }
-
-  newOption(): FormGroup {
-    this.optionForm = this.fb.group({
-      optionLabel: ['', Validators.required],
-      optionText: ['', Validators.required]
-    });
-    return this.optionForm;
-  }
-
-  addQuantity() {
-    this.qOptions.push(this.newOption());
-  }
-
-  removeQuantity(i: number) {
-    this.qOptions.removeAt(i);
-  }
-
-  submit() {
-    console.log(this.questionForm.value);
-  }
-
-  questionTypeChanged($event) {
-    console.log($event.target.value);
-    if ($event.target.value === 'multiple') {
-      this.showMultipleOptions = true;
-    } else {
-      this.showMultipleOptions = false;
-    }
-  }
-*/
   qType: any;
   showMultipleOptions: boolean;
   questionForm: FormGroup;
   qOptionForm: FormGroup;
+  optionLabelArray: Array<any>;
+  questionSets: any;
+  optionsArray: Array<any>;
+  ansArray: Array<any>;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,
+              private qSApiManager: QsApiManagerService,
+              private spinner: NgxSpinnerService,
+              private alertService: AlertService,
+              private apiService: QApiManagerService) {
+
     this.questionForm = this.fb.group({
       question_text: new FormControl('', [Validators.required]),
       qType: new FormControl('', [Validators.required]),
-      qOptions: this.fb.array([])
+      booleanAns: '',
+      qOptions: this.fb.array([]),
+      queSetID: new FormControl('', [Validators.required])
     });
+    this.optionLabelArray = ['A', 'B', 'C', 'D', 'E'];
+    this.optionsArray = [];
+    this.ansArray = [];
+  }
+
+
+  getQuestionSet() {
+    this.spinner.show();
+    this.qSApiManager.getQuestionSet().subscribe((response: any) => {
+        this.spinner.hide();
+        this.questionSets = response;
+      },
+      error => {
+        this.spinner.hide();
+      }
+    );
   }
 
   newOption(): FormGroup {
@@ -84,6 +59,8 @@ export class QuestionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.showMultipleOptions = true;
+    this.getQuestionSet();
   }
 
   get qOptions() {
@@ -91,7 +68,9 @@ export class QuestionsComponent implements OnInit {
   }
 
   addOption() {
-    this.qOptions.push(this.newOption());
+    if (this.qOptions.length < 5) {
+      this.qOptions.push(this.newOption());
+    }
   }
 
   removeQuantity(i: number) {
@@ -99,17 +78,50 @@ export class QuestionsComponent implements OnInit {
   }
 
   submit() {
+    const options = this.questionForm.controls['qOptions'].value;
+    for (let i = 0; i < options.length; i++) {
+      console.log(options[i].optionLabel);
+      const op = {
+        'optionName': options[i].optionText,
+        'optionValue': this.optionLabelArray[i],
+      };
+      this.optionsArray.push(op);
+
+      if (options[i].optionLabel) {
+        this.ansArray.push(this.optionLabelArray[i]);
+      }
+    }
+
     console.log(this.questionForm.value);
+    const data = {
+      'questionText': this.questionForm.controls['question_text'].value,
+      'type': this.questionForm.controls['qType'].value,
+      'queSetID': this.questionForm.controls['queSetID'].value,
+      'questionOptions': this.optionsArray,
+      'answers': this.ansArray,
+    };
+    console.log(this.questionForm.value);
+    console.log(data);
+
+    this.apiService.create(data).subscribe((response: any) => {
+        this.spinner.hide();
+        console.log(response);
+      },
+      error => {
+        this.spinner.hide();
+      }
+    );
   }
 
   questionTypeChanged($event) {
-    console.log($event.target.value);
     if ($event.target.value === 'multiple') {
       this.showMultipleOptions = true;
       this.qOptions.clear();
       this.addOption();
     } else {
+      console.log($event.target.value);
       this.showMultipleOptions = false;
+      this.qOptions.clear();
     }
   }
 }
