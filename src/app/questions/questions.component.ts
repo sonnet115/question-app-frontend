@@ -13,6 +13,8 @@ import {QApiManagerService} from './q-api-manager.service';
 export class QuestionsComponent implements OnInit {
   qType: any;
   showMultipleOptions: boolean;
+  showYNOptions: boolean;
+  showBooleanOptions: boolean;
   questionForm: FormGroup;
   qOptionForm: FormGroup;
   optionLabelArray: Array<any>;
@@ -30,6 +32,7 @@ export class QuestionsComponent implements OnInit {
       question_text: new FormControl('', [Validators.required]),
       qType: new FormControl('', [Validators.required]),
       booleanAns: '',
+      YNAns: '',
       qOptions: this.fb.array([]),
       queSetID: new FormControl('', [Validators.required])
     });
@@ -59,8 +62,10 @@ export class QuestionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.showMultipleOptions = true;
     this.getQuestionSet();
+    this.showMultipleOptions = false;
+    this.showYNOptions = false;
+    this.showBooleanOptions = false;
   }
 
   get qOptions() {
@@ -78,18 +83,50 @@ export class QuestionsComponent implements OnInit {
   }
 
   submit() {
-    const options = this.questionForm.controls['qOptions'].value;
-    for (let i = 0; i < options.length; i++) {
-      console.log(options[i].optionLabel);
-      const op = {
-        'optionName': options[i].optionText,
-        'optionValue': this.optionLabelArray[i],
-      };
-      this.optionsArray.push(op);
+    if (this.questionForm.controls['qType'].value === 'multiple') {
+      this.ansArray = [];
+      this.optionsArray = [];
 
-      if (options[i].optionLabel) {
-        this.ansArray.push(this.optionLabelArray[i]);
+      const options = this.questionForm.controls['qOptions'].value;
+      for (let i = 0; i < options.length; i++) {
+        const op = {
+          'optionName': options[i].optionText,
+          'optionValue': this.optionLabelArray[i],
+        };
+        this.optionsArray.push(op);
+
+        if (options[i].optionLabel) {
+          this.ansArray.push(this.optionLabelArray[i]);
+        }
       }
+    } else if (this.questionForm.controls['qType'].value === 'boolean') {
+      this.ansArray = [];
+      this.optionsArray = [];
+
+      const t = {
+        'optionName': 'True',
+        'optionValue': 'TRUE'
+      };
+      const f = {
+        'optionName': 'False',
+        'optionValue': 'FALSE'
+      };
+      this.optionsArray.push(t, f);
+      this.ansArray.push(this.questionForm.controls['booleanAns'].value);
+
+    } else {
+      this.ansArray = [];
+      this.optionsArray = [];
+      const yes = {
+        'optionName': 'Yes',
+        'optionValue': 'YES'
+      };
+      const no = {
+        'optionName': 'No',
+        'optionValue': 'NO'
+      };
+      this.optionsArray.push(yes, no);
+      this.ansArray.push(this.questionForm.controls['YNAns'].value);
     }
 
     console.log(this.questionForm.value);
@@ -100,7 +137,7 @@ export class QuestionsComponent implements OnInit {
       'questionOptions': this.optionsArray,
       'answers': this.ansArray,
     };
-    console.log(this.questionForm.value);
+
     console.log(data);
 
     this.apiService.create(data).subscribe((response: any) => {
@@ -115,13 +152,21 @@ export class QuestionsComponent implements OnInit {
 
   questionTypeChanged($event) {
     if ($event.target.value === 'multiple') {
+      this.showBooleanOptions = false;
       this.showMultipleOptions = true;
+      this.showYNOptions = false;
       this.qOptions.clear();
       this.addOption();
-    } else {
-      console.log($event.target.value);
+    } else if ($event.target.value === 'boolean') {
+      this.showBooleanOptions = true;
       this.showMultipleOptions = false;
+      this.showYNOptions = false;
       this.qOptions.clear();
+    } else {
+      this.qOptions.clear();
+      this.showBooleanOptions = false;
+      this.showMultipleOptions = false;
+      this.showYNOptions = true;
     }
   }
 }
