@@ -21,6 +21,7 @@ export class QuestionsComponent implements OnInit {
   questionSets: any;
   optionsArray: Array<any>;
   ansArray: Array<any>;
+  submitted = false;
 
   constructor(private fb: FormBuilder,
               private qSApiManager: QsApiManagerService,
@@ -29,10 +30,10 @@ export class QuestionsComponent implements OnInit {
               private apiService: QApiManagerService) {
 
     this.questionForm = this.fb.group({
-      question_text: new FormControl('', [Validators.required]),
+      question_text: ['', [Validators.required]],
       qType: new FormControl('', [Validators.required]),
-      booleanAns: '',
-      YNAns: '',
+      booleanAns: new FormControl('FALSE', [Validators.required]),
+      YNAns: new FormControl('NO', [Validators.required]),
       qOptions: this.fb.array([]),
       queSetID: new FormControl('', [Validators.required])
     });
@@ -41,6 +42,9 @@ export class QuestionsComponent implements OnInit {
     this.ansArray = [];
   }
 
+  get fields() {
+    return this.questionForm.controls;
+  }
 
   getQuestionSet() {
     this.spinner.show();
@@ -83,6 +87,14 @@ export class QuestionsComponent implements OnInit {
   }
 
   submit() {
+    this.spinner.show();
+    this.submitted = true;
+
+    if (this.questionForm.invalid) {
+      this.spinner.hide();
+      return;
+    }
+
     if (this.questionForm.controls['qType'].value === 'multiple') {
       this.ansArray = [];
       this.optionsArray = [];
