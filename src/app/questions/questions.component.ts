@@ -1,5 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormGroup, FormControl, FormArray, FormBuilder, Validators} from '@angular/forms';
+import {QsApiManagerService} from '../question-sets/qs-api-manager.service';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {AlertService} from '../dashboards/_alert';
+import {QApiManagerService} from './q-api-manager.service';
 
 @Component({
   selector: 'app-questions',
@@ -7,73 +11,51 @@ import {FormGroup, FormControl, FormArray, FormBuilder, Validators} from '@angul
   styleUrls: ['./questions.component.css']
 })
 export class QuestionsComponent implements OnInit {
-  /*qType: any;
-  questionForm: FormGroup;
+  qType: any;
   showMultipleOptions: boolean;
-  questionOptions: any;
-  optionForm: FormGroup;
+  showYNOptions: boolean;
+  showBooleanOptions: boolean;
+  questionForm: FormGroup;
+  qOptionForm: FormGroup;
+  optionLabelArray: Array<any>;
+  questionSets: any;
+  optionsArray: Array<any>;
+  ansArray: Array<any>;
+  submitted = false;
 
-  constructor(private fb: FormBuilder) {
-  }
-
-  ngOnInit(): void {
-    this.questionOptions = 1;
+  constructor(private fb: FormBuilder,
+              private qSApiManager: QsApiManagerService,
+              private spinner: NgxSpinnerService,
+              private alertService: AlertService,
+              private apiService: QApiManagerService) {
 
     this.questionForm = this.fb.group({
-      question_text: ['', Validators.required],
-      qType: ['', Validators.required],
+      question_text: ['', [Validators.required]],
+      qType: new FormControl('', [Validators.required]),
+      booleanAns: new FormControl('FALSE', [Validators.required]),
+      YNAns: new FormControl('NO', [Validators.required]),
       qOptions: this.fb.array([]),
+      queSetID: new FormControl('', [Validators.required])
     });
+    this.optionLabelArray = ['A', 'B', 'C', 'D', 'E'];
+    this.optionsArray = [];
+    this.ansArray = [];
   }
 
-  get formControls() {
+  get fields() {
     return this.questionForm.controls;
   }
 
-  get qOptions(): FormArray {
-    return this.questionForm.get('qOptions') as FormArray;
-  }
-
-  newOption(): FormGroup {
-    this.optionForm = this.fb.group({
-      optionLabel: ['', Validators.required],
-      optionText: ['', Validators.required]
-    });
-    return this.optionForm;
-  }
-
-  addQuantity() {
-    this.qOptions.push(this.newOption());
-  }
-
-  removeQuantity(i: number) {
-    this.qOptions.removeAt(i);
-  }
-
-  submit() {
-    console.log(this.questionForm.value);
-  }
-
-  questionTypeChanged($event) {
-    console.log($event.target.value);
-    if ($event.target.value === 'multiple') {
-      this.showMultipleOptions = true;
-    } else {
-      this.showMultipleOptions = false;
-    }
-  }
-*/
-  qType: any;
-  showMultipleOptions: boolean;
-  questionForm: FormGroup;
-  qOptionForm: FormGroup;
-
-  constructor(private fb: FormBuilder) {
-    this.questionForm = this.fb.group({
-      question_text: new FormControl('', [Validators.required]),
-      qType: new FormControl('', [Validators.required]),
-      qOptions: this.fb.array([])
-    });
+  getQuestionSet() {
+    this.spinner.show();
+    this.qSApiManager.getQuestionSet().subscribe((response: any) => {
+        this.spinner.hide();
+        this.questionSets = response;
+      },
+      error => {
+        this.spinner.hide();
+      }
+    );
   }
 
   newOption(): FormGroup {
@@ -84,6 +66,10 @@ export class QuestionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getQuestionSet();
+    this.showMultipleOptions = false;
+    this.showYNOptions = false;
+    this.showBooleanOptions = false;
   }
 
   get qOptions() {
@@ -91,7 +77,9 @@ export class QuestionsComponent implements OnInit {
   }
 
   addOption() {
-    this.qOptions.push(this.newOption());
+    if (this.qOptions.length < 5) {
+      this.qOptions.push(this.newOption());
+    }
   }
 
   removeQuantity(i: number) {
@@ -99,22 +87,98 @@ export class QuestionsComponent implements OnInit {
   }
 
   submit() {
+    this.spinner.show();
+    this.submitted = true;
+
+    if (this.questionForm.invalid) {
+      this.spinner.hide();
+      return;
+    }
+
+    if (this.questionForm.controls['qType'].value === 'multiple') {
+      this.ansArray = [];
+      this.optionsArray = [];
+
+      const options = this.questionForm.controls['qOptions'].value;
+      for (let i = 0; i < options.length; i++) {
+        const op = {
+          'optionName': options[i].optionText,
+          'optionValue': this.optionLabelArray[i],
+        };
+        this.optionsArray.push(op);
+
+        if (options[i].optionLabel) {
+          this.ansArray.push(this.optionLabelArray[i]);
+        }
+      }
+    } else if (this.questionForm.controls['qType'].value === 'boolean') {
+      this.ansArray = [];
+      this.optionsArray = [];
+
+      const t = {
+        'optionName': 'True',
+        'optionValue': 'TRUE'
+      };
+      const f = {
+        'optionName': 'False',
+        'optionValue': 'FALSE'
+      };
+      this.optionsArray.push(t, f);
+      this.ansArray.push(this.questionForm.controls['booleanAns'].value);
+
+    } else {
+      this.ansArray = [];
+      this.optionsArray = [];
+      const yes = {
+        'optionName': 'Yes',
+        'optionValue': 'YES'
+      };
+      const no = {
+        'optionName': 'No',
+        'optionValue': 'NO'
+      };
+      this.optionsArray.push(yes, no);
+      this.ansArray.push(this.questionForm.controls['YNAns'].value);
+    }
+
     console.log(this.questionForm.value);
+    const data = {
+      'questionText': this.questionForm.controls['question_text'].value,
+      'type': this.questionForm.controls['qType'].value,
+      'queSetID': this.questionForm.controls['queSetID'].value,
+      'questionOptions': this.optionsArray,
+      'answers': this.ansArray,
+    };
+
+    console.log(data);
+
+    this.apiService.create(data).subscribe((response: any) => {
+        this.spinner.hide();
+        console.log(response);
+      },
+      error => {
+        this.spinner.hide();
+      }
+    );
   }
 
   questionTypeChanged($event) {
-    console.log('hello question');
-    console.log($event.target);
-    console.log($event.target.value);
     if ($event.target.value === 'multiple') {
+      this.showBooleanOptions = false;
       this.showMultipleOptions = true;
+      this.showYNOptions = false;
       this.qOptions.clear();
       this.addOption();
-    } else {
+    } else if ($event.target.value === 'boolean') {
+      this.showBooleanOptions = true;
       this.showMultipleOptions = false;
-    }
-
-    if ($event.target.value === 'boolean') {
+      this.showYNOptions = false;
+      this.qOptions.clear();
+    } else {
+      this.qOptions.clear();
+      this.showBooleanOptions = false;
+      this.showMultipleOptions = false;
+      this.showYNOptions = true;
     }
   }
 }

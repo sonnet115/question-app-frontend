@@ -53,6 +53,7 @@ import {QuestionSetsComponent} from './question-sets/question-sets.component';
 import {EndPointsQS} from './question-sets/EndPointsQS';
 import {AlertModule} from './dashboards/_alert';
 import { QuestionsComponent } from './questions/questions.component';
+import {EndPointsQ} from './questions/EndPointsQ';
 
 registerLocaleData(localeFr);
 
@@ -105,6 +106,7 @@ registerLocaleData(localeFr);
     CommonEndPoints,
     CommonService,
     EndPointsQS,
+    EndPointsQ,
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG

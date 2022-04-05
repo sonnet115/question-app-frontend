@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       username: ['', [Validators.required]],
       password: ['', [Validators.required]],
     });
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || 'dashboard/home';
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || 'manage-question-sets';
   }
 
   get fields() {
