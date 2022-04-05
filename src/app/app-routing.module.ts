@@ -5,6 +5,7 @@ import {BlankComponent} from './layouts/blank/blank.component';
 import {AuthGuard} from './_guards/auth.guard';
 import {QuestionSetsComponent} from './question-sets/question-sets.component';
 import {QuestionsComponent} from './questions/questions.component';
+import {QuestionListComponent} from './question-list/question-list.component';
 
 export const Approutes: Routes = [
   {
@@ -35,8 +36,20 @@ export const Approutes: Routes = [
     component: FullComponent,
     children: [
       {
-        path: 'manage-questions',
+        path: 'create-questions',
         component: QuestionsComponent,
+        canActivate: [AuthGuard]
+      }
+    ]
+  },
+
+  {
+    path: '',
+    component: FullComponent,
+    children: [
+      {
+        path: 'questions-list/:id',
+        component: QuestionListComponent,
         canActivate: [AuthGuard]
       }
     ]

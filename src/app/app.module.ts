@@ -54,6 +54,7 @@ import {EndPointsQS} from './question-sets/EndPointsQS';
 import {AlertModule} from './dashboards/_alert';
 import { QuestionsComponent } from './questions/questions.component';
 import {EndPointsQ} from './questions/EndPointsQ';
+import { QuestionListComponent } from './question-list/question-list.component';
 
 registerLocaleData(localeFr);
 
@@ -67,7 +68,8 @@ registerLocaleData(localeFr);
     BreadcrumbComponent,
     SidebarComponent,
     QuestionSetsComponent,
-    QuestionsComponent
+    QuestionsComponent,
+    QuestionListComponent
   ],
     imports: [
         CommonModule,

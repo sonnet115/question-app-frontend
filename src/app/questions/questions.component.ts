@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {FormGroup, FormControl, FormArray, FormBuilder, Validators} from '@angular/forms';
 import {QsApiManagerService} from '../question-sets/qs-api-manager.service';
 import {NgxSpinnerService} from 'ngx-spinner';
@@ -10,7 +10,7 @@ import {QApiManagerService} from './q-api-manager.service';
   templateUrl: './questions.component.html',
   styleUrls: ['./questions.component.css']
 })
-export class QuestionsComponent implements OnInit {
+export class QuestionsComponent implements OnInit, AfterViewInit {
   qType: any;
   showMultipleOptions: boolean;
   showYNOptions: boolean;
@@ -31,7 +31,7 @@ export class QuestionsComponent implements OnInit {
 
     this.questionForm = this.fb.group({
       question_text: ['', [Validators.required]],
-      qType: new FormControl('', [Validators.required]),
+      qType: new FormControl('multiple', [Validators.required]),
       booleanAns: new FormControl('FALSE', [Validators.required]),
       YNAns: new FormControl('NO', [Validators.required]),
       qOptions: this.fb.array([]),
@@ -141,7 +141,6 @@ export class QuestionsComponent implements OnInit {
       this.ansArray.push(this.questionForm.controls['YNAns'].value);
     }
 
-    console.log(this.questionForm.value);
     const data = {
       'questionText': this.questionForm.controls['question_text'].value,
       'type': this.questionForm.controls['qType'].value,
@@ -155,9 +154,13 @@ export class QuestionsComponent implements OnInit {
     this.apiService.create(data).subscribe((response: any) => {
         this.spinner.hide();
         console.log(response);
+        this.questionForm.reset();
+        this.alertService.success(response.message, {autoClose: true});
+        this.submitted = false;
       },
       error => {
         this.spinner.hide();
+        this.alertService.error(error.message, {autoClose: true});
       }
     );
   }
@@ -180,5 +183,9 @@ export class QuestionsComponent implements OnInit {
       this.showMultipleOptions = false;
       this.showYNOptions = true;
     }
+  }
+
+  ngAfterViewInit(): void {
+    this.showMultipleOptions = true;
   }
 }

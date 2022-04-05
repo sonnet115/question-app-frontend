@@ -18,6 +18,12 @@ export class QApiManagerService {
     );
   }
 
+  public getQuestionByQS(id, body): any {
+    return this.http.post(this.endpoints.getQ + '/' + id, body).pipe(
+      catchError(this.handleError),
+    );
+  }
+
   private handleError(error: HttpErrorResponse): any {
     return throwError(error);
   }
