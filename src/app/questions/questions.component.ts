@@ -31,6 +31,7 @@ export class QuestionsComponent implements OnInit {
 
     this.questionForm = this.fb.group({
       question_text: ['', [Validators.required]],
+      optionText: ['', [Validators.required]],
       qType: new FormControl('', [Validators.required]),
       booleanAns: new FormControl('FALSE', [Validators.required]),
       YNAns: new FormControl('NO', [Validators.required]),

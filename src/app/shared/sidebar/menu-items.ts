@@ -16,5 +16,13 @@ export const ROUTES: RouteInfo[] = [
     class: '',
     extralink: false,
     submenu: []
+  },
+  {
+    path: '/manage-questions',
+    title: 'Manage Questions',
+    icon: 'icon-Files',
+    class: '',
+    extralink: false,
+    submenu: []
   }
 ];

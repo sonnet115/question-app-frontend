@@ -8,7 +8,7 @@
       <label class="control-label col-sm-10">Question Text</label>
       <div class="col-sm-10">
         <input type="text" class="form-control" formControlName="question_text" placeholder="Question Text"
-               name="question_text" [ngClass]="{ 'is-invalid': submitted && fields.username.errors }">
+               name="question_text" [ngClass]="{ 'is-invalid': submitted && fields.question_text.errors }">
         <div *ngIf="submitted && fields.question_text.errors" class="invalid-feedback">
           <div *ngIf="fields.question_text.errors.required">Question Text is required</div>
         </div>
@@ -18,9 +18,12 @@
     <div class="form-group">
       <div class="col-sm-10">
         <b>Select Question Set</b>
-        <select class="form-control" name="queSetID" formControlName="queSetID">
-          <option *ngFor="let qs of questionSets" value="{{qs.id}}">{{qs.name}}</option>
+        <select class="form-control" name="queSetID" formControlName="queSetID" [ngClass]="{ 'is-invalid': submitted && fields.queSetID.errors }">
+          <option *ngFor="let qs of questionSets" value="{{qs.id}}" >{{qs.name}}</option>
         </select>
+        <div *ngIf="submitted && fields.queSetID.errors" class="invalid-feedback">
+          <div *ngIf="fields.queSetID.errors.required">Question set is required</div>
+        </div>
       </div>
     </div>
 
@@ -53,7 +56,11 @@
           </div>
 
           <div class="col-sm-9">
-            <input class="form-control" placeholder="Enter Option" formControlName="optionText" name="optionText">
+            <input class="form-control" placeholder="Enter Option" formControlName="optionText" name="optionText"
+                   [ngClass]="{ 'is-invalid': submitted && fields.optionText.errors }">
+            <div *ngIf="submitted && fields.optionText.errors" class="invalid-feedback">
+              <div *ngIf="fields.optionText.errors.required">Question option is required</div>
+            </div>
           </div>
 
           <div class="col-sm-2">
@@ -96,7 +103,6 @@
         </label>
       </div>
     </div>
-
 
     <hr>
     <div class="form-group">
