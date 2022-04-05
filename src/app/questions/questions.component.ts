@@ -103,6 +103,8 @@ export class QuestionsComponent implements OnInit {
   }
 
   questionTypeChanged($event) {
+    console.log('hello question');
+    console.log($event.target);
     console.log($event.target.value);
     if ($event.target.value === 'multiple') {
       this.showMultipleOptions = true;
@@ -110,6 +112,9 @@ export class QuestionsComponent implements OnInit {
       this.addOption();
     } else {
       this.showMultipleOptions = false;
+    }
+
+    if ($event.target.value === 'boolean') {
     }
   }
 }
