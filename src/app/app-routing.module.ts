@@ -6,6 +6,7 @@ import {AuthGuard} from './_guards/auth.guard';
 import {QuestionSetsComponent} from './question-sets/question-sets.component';
 import {QuestionsComponent} from './questions/questions.component';
 import {QuestionListComponent} from './question-list/question-list.component';
+import {UpdateQuestionComponent} from './update-question/update-question.component';
 
 export const Approutes: Routes = [
   {
@@ -50,6 +51,18 @@ export const Approutes: Routes = [
       {
         path: 'questions-list/:id',
         component: QuestionListComponent,
+        canActivate: [AuthGuard]
+      }
+    ]
+  },
+
+  {
+    path: '',
+    component: FullComponent,
+    children: [
+      {
+        path: 'question-update',
+        component: UpdateQuestionComponent,
         canActivate: [AuthGuard]
       }
     ]

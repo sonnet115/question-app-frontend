@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {AlertService} from '../dashboards/_alert';
 import {QApiManagerService} from '../questions/q-api-manager.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-question-list',
@@ -14,25 +15,25 @@ export class QuestionListComponent implements OnInit {
   totalPage: any;
   totalRecords: any;
   limit: any;
-  offset: any;
-  currentPage: any;
-
+  pageNumber: any;
 
   constructor(private spinner: NgxSpinnerService,
               private alertService: AlertService,
-              private apiService: QApiManagerService) {
+              private apiService: QApiManagerService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
-    this.getQuestionSet(2, 0);
-    this.currentPage = 0;
+    this.getQuestionSet(5, 0);
   }
 
-  getQuestionSet(limit, offset) {
-    this.offset = 0;
+  getQuestionSet(limit, pageNumber) {
+    console.log('limit {}', limit);
+    console.log('pageNumber {}', pageNumber);
+    this.pageNumber = 0;
     const pagination = {
       'limit': limit,
-      'offset': offset
+      'pageNumber': pageNumber
     };
     this.spinner.show();
     this.apiService.getQuestionByQS(localStorage.getItem('qs_id'), pagination).subscribe((response: any) => {
@@ -41,8 +42,7 @@ export class QuestionListComponent implements OnInit {
         this.totalPage = response.totalPages;
         this.totalRecords = response.totalRecords;
         this.limit = response.limit;
-        this.offset = response.offset;
-        console.log(this.totalPage);
+        this.pageNumber = response.pageNumber;
       },
       error => {
         this.spinner.hide();
@@ -50,8 +50,14 @@ export class QuestionListComponent implements OnInit {
     );
   }
 
-  gotoPage(limit, offset, currentPage) {
-    this.currentPage = currentPage;
-    this.getQuestionSet(limit, offset);
+  gotoPage(limit, currentPage) {
+    console.log(currentPage);
+    this.getQuestionSet(limit, currentPage);
+  }
+
+  updateQ(id) {
+    localStorage.removeItem('question_id');
+    this.router.navigate(['question-update']);
+    localStorage.setItem('question_id', id);
   }
 }

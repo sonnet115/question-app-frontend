@@ -55,6 +55,7 @@ import {AlertModule} from './dashboards/_alert';
 import { QuestionsComponent } from './questions/questions.component';
 import {EndPointsQ} from './questions/EndPointsQ';
 import { QuestionListComponent } from './question-list/question-list.component';
+import { UpdateQuestionComponent } from './update-question/update-question.component';
 
 registerLocaleData(localeFr);
 
@@ -69,7 +70,8 @@ registerLocaleData(localeFr);
     SidebarComponent,
     QuestionSetsComponent,
     QuestionsComponent,
-    QuestionListComponent
+    QuestionListComponent,
+    UpdateQuestionComponent
   ],
     imports: [
         CommonModule,

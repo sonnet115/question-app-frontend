@@ -24,6 +24,18 @@ export class QApiManagerService {
     );
   }
 
+  public updateQuestion(id, body): any {
+    return this.http.put(this.endpoints.updateQ + '/' + id, body).pipe(
+      catchError(this.handleError),
+    );
+  }
+
+  public getQuestionById(id): any {
+    return this.http.get(this.endpoints.getQId + '/' + id).pipe(
+      catchError(this.handleError),
+    );
+  }
+
   private handleError(error: HttpErrorResponse): any {
     return throwError(error);
   }
