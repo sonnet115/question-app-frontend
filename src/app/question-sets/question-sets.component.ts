@@ -5,6 +5,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 import {QsApiManagerService} from './qs-api-manager.service';
 import {number} from 'ngx-custom-validators/src/app/number/validator';
 import {AlertService} from '../dashboards/_alert';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-question-sets',
@@ -26,7 +27,8 @@ export class QuestionSetsComponent implements OnInit {
               private formBuilder: FormBuilder,
               private spinner: NgxSpinnerService,
               private apiService: QsApiManagerService,
-              private alertService: AlertService) {
+              private alertService: AlertService,
+              private router: Router) {
   }
 
   open(content) {
@@ -166,5 +168,11 @@ export class QuestionSetsComponent implements OnInit {
         this.spinner.hide();
       }
     );
+  }
+
+  gotQList(id) {
+    localStorage.removeItem('qs_id');
+    this.router.navigate(['questions-list/' + id]);
+    localStorage.setItem('qs_id', id);
   }
 }

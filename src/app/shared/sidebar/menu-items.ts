@@ -18,8 +18,9 @@ export const ROUTES: RouteInfo[] = [
     submenu: []
   },
   {
-    path: '/manage-questions',
-    title: 'Manage Questions',
+
+    path: '/create-questions',
+    title: 'Create Question',
     icon: 'icon-Files',
     class: '',
     extralink: false,

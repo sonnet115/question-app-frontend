@@ -1,12 +1,12 @@
 <ngx-spinner fullScreen="false">
   <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
-<div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
-     style="background:url(../../../../assets/images/big/auth-bg.jpg) no-repeat center center;">
+<div class="auth-wrapper d-flex no-block justify-content-center align-items-center">
+<!--  style="background:url(../../../../assets/images/big/auth-bg.jpg) no-repeat center center;"-->
   <div class="auth-box" style="max-width: 500px">
     <div id="signupForm" [ngClass]="{'d-none': signupFormShow}">
       <div class="logo">
-        <span class="db"><img src="../../../../assets/images/logo-icon.png" style="max-width: 40%" alt="logo"/></span>
+        <span class="db"><img src="../../../../assets/images/logo.png"  style="max-width: 30%" alt="logo"/></span>
         <h2 class="font-medium m-b-20 text-base font-weight-bold">{{'welcome_signup' | translate}}</h2>
       </div>
       <alert fade="true"></alert>

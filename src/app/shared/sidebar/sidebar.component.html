@@ -31,7 +31,6 @@
         <span class="hide-menu">{{sidebarnavItem.title | translate}}</span>
       </a>
 
-
       <!-- Second level menu -->
       <ul aria-expanded="false" class="collapse first-level" *ngIf="sidebarnavItem.submenu.length > 0"
           [ngClass]="{'in' : showMenu === sidebarnavItem.title }">

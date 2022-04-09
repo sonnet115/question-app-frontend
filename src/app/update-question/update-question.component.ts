@@ -1,16 +1,17 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {FormGroup, FormControl, FormArray, FormBuilder, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {QsApiManagerService} from '../question-sets/qs-api-manager.service';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {AlertService} from '../dashboards/_alert';
-import {QApiManagerService} from './q-api-manager.service';
+import {QApiManagerService} from '../questions/q-api-manager.service';
+import {Router} from '@angular/router';
 
 @Component({
-  selector: 'app-questions',
-  templateUrl: './questions.component.html',
-  styleUrls: ['./questions.component.css']
+  selector: 'app-update-question',
+  templateUrl: './update-question.component.html',
+  styleUrls: ['./update-question.component.css']
 })
-export class QuestionsComponent implements OnInit, AfterViewInit {
+export class UpdateQuestionComponent implements OnInit, AfterViewInit {
   qType: any;
   showMultipleOptions: boolean;
   showYNOptions: boolean;
@@ -19,6 +20,7 @@ export class QuestionsComponent implements OnInit, AfterViewInit {
   qOptionForm: FormGroup;
   optionLabelArray: Array<any>;
   questionSets: any;
+  question: any;
   optionsArray: Array<any>;
   ansArray: Array<any>;
   submitted = false;
@@ -27,11 +29,11 @@ export class QuestionsComponent implements OnInit, AfterViewInit {
               private qSApiManager: QsApiManagerService,
               private spinner: NgxSpinnerService,
               private alertService: AlertService,
-              private apiService: QApiManagerService) {
+              private apiService: QApiManagerService,
+              private router: Router) {
 
     this.questionForm = this.fb.group({
       question_text: ['', [Validators.required]],
-
       qType: new FormControl('multiple', [Validators.required]),
       booleanAns: new FormControl('FALSE', [Validators.required]),
       YNAns: new FormControl('NO', [Validators.required]),
@@ -47,6 +49,59 @@ export class QuestionsComponent implements OnInit, AfterViewInit {
     return this.questionForm.controls;
   }
 
+  getQuestion() {
+    this.spinner.show();
+    this.apiService.getQuestionById(localStorage.getItem('question_id')).subscribe((response: any) => {
+        this.spinner.hide();
+        console.log(response);
+        this.question = response;
+        this.questionForm.controls['queSetID'].setValue(this.question.questionSetID);
+        this.questionForm.controls['qType'].setValue(this.question.questions.type);
+
+        if (this.question.questions.type === 'multiple') {
+          this.showBooleanOptions = false;
+          this.showMultipleOptions = true;
+          this.showYNOptions = false;
+          for (let i = 0; i < this.question.questions.questionOptions.length; i++) {
+            if (this.question.questions.questionAnswers.some(e => e.answer === this.question.questions.questionOptions[i].optionValue)) {
+              this.addOption(true, this.question.questions.questionOptions[i].optionName);
+            } else {
+              this.addOption(false, this.question.questions.questionOptions[i].optionName);
+            }
+          }
+        } else if (this.question.questions.type === 'boolean') {
+          this.showBooleanOptions = true;
+          this.showMultipleOptions = false;
+          this.showYNOptions = false;
+
+          for (let i = 0; i < this.question.questions.questionOptions.length; i++) {
+            if (this.question.questions.questionAnswers.some(e => e.answer === 'TRUE')) {
+              this.questionForm.controls['booleanAns'].setValue('TRUE');
+            } else {
+              this.questionForm.controls['booleanAns'].setValue('FALSE');
+            }
+          }
+
+        } else {
+          this.showBooleanOptions = false;
+          this.showMultipleOptions = false;
+          this.showYNOptions = true;
+          for (let i = 0; i < this.question.questions.questionOptions.length; i++) {
+            if (this.question.questions.questionAnswers.some(e => e.answer === 'YES')) {
+              this.questionForm.controls['YNAns'].setValue('YES');
+            } else {
+              this.questionForm.controls['YNAns'].setValue('NO');
+            }
+          }
+        }
+
+      },
+      error => {
+        this.spinner.hide();
+      }
+    );
+  }
+
   getQuestionSet() {
     this.spinner.show();
     this.qSApiManager.getQuestionSet().subscribe((response: any) => {
@@ -59,27 +114,29 @@ export class QuestionsComponent implements OnInit, AfterViewInit {
     );
   }
 
-  newOption(): FormGroup {
+  newOption(label: any, text: string): FormGroup {
     return this.qOptionForm = this.fb.group({
-      optionLabel: new FormControl(false, [Validators.required]),
-      optionText: new FormControl('', [Validators.required]),
+      optionLabel: new FormControl(label, [Validators.required]),
+      optionText: new FormControl(text, [Validators.required]),
     });
   }
 
   ngOnInit(): void {
+    this.getQuestion();
     this.getQuestionSet();
     this.showMultipleOptions = false;
     this.showYNOptions = false;
     this.showBooleanOptions = false;
+
   }
 
   get qOptions() {
     return this.questionForm.controls['qOptions'] as FormArray;
   }
 
-  addOption() {
+  addOption(label: any, text: string) {
     if (this.qOptions.length < 5) {
-      this.qOptions.push(this.newOption());
+      this.qOptions.push(this.newOption(label, text));
     }
   }
 
@@ -145,26 +202,21 @@ export class QuestionsComponent implements OnInit, AfterViewInit {
     const data = {
       'questionText': this.questionForm.controls['question_text'].value,
       'type': this.questionForm.controls['qType'].value,
-      'queSetID': this.questionForm.controls['queSetID'].value,
+      'queSetID': localStorage.getItem('qs_id'),
       'questionOptions': this.optionsArray,
       'answers': this.ansArray,
     };
 
     console.log(data);
 
-    this.apiService.create(data).subscribe((response: any) => {
+    this.apiService.updateQuestion(localStorage.getItem('question_id'), data).subscribe((response: any) => {
         this.spinner.hide();
         console.log(response);
         this.alertService.success(response.message, {autoClose: true});
         this.submitted = false;
-        this.questionForm = this.fb.group({
-          question_text: ['', [Validators.required]],
-          qType: new FormControl('multiple', [Validators.required]),
-          booleanAns: new FormControl('FALSE', [Validators.required]),
-          YNAns: new FormControl('NO', [Validators.required]),
-          qOptions: this.fb.array([]),
-          queSetID: new FormControl('', [Validators.required])
-        });
+        setTimeout(() => {
+          this.router.navigate(['questions-list/' + localStorage.getItem('qs_id')]);
+        }, 2000);
       },
       error => {
         this.spinner.hide();
@@ -179,7 +231,7 @@ export class QuestionsComponent implements OnInit, AfterViewInit {
       this.showMultipleOptions = true;
       this.showYNOptions = false;
       this.qOptions.clear();
-      this.addOption();
+      this.addOption('', '');
     } else if ($event.target.value === 'boolean') {
       this.showBooleanOptions = true;
       this.showMultipleOptions = false;
@@ -194,6 +246,7 @@ export class QuestionsComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.showMultipleOptions = true;
+
   }
+
 }

@@ -9,12 +9,14 @@
         <div class="col-12 text-center">
           <h3 class="font-weight-bold text-white">{{questionSet.name}}</h3>
           <h5 class="text-dark">Total Questions: </h5>
-          <h4 class="text-white" style="font-size: 25px">{{ questionSet.questions.length }}</h4>
+          <a href="javascript:void(0)" (click)="gotQList(questionSet.id)" class="text-white"
+             style="font-size: 25px; cursor: pointer;text-decoration: underline">{{ questionSet.questions.length }}</a>
         </div>
       </div>
       <div class="row" style="margin-bottom: -20px;">
         <div class="col-sm-6 ">
-          <p class=" font-weight-bold text-white" (click)="confirmDelete(confirmModal, questionSet.name,questionSet.id)"><i
+          <p class=" font-weight-bold text-white"
+             (click)="confirmDelete(confirmModal, questionSet.name,questionSet.id)"><i
             class="fa fa-trash"></i></p>
         </div>
         <div class="col-sm-6 ">
