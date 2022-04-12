@@ -45,7 +45,7 @@ export class SignupComponent implements OnInit, AfterViewInit {
     });
 
     if (localStorage.getItem('user_token')) {
-      this.router.navigate(['dashboard/home']);
+      this.router.navigate(['manage-question-sets']);
     }
   }
 
