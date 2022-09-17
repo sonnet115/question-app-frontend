@@ -1,0 +1,11 @@
+::ng-deep table.dataTable td.dataTables_empty {
+  display: none;
+}
+
+th{
+  font-size: 15px !important;
+}
+
+::ng-deep td{
+  font-size: 15px !important;
+}

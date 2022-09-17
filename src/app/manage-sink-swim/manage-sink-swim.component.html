@@ -1,0 +1,107 @@
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">Please wait ...</p>
+</ngx-spinner>
+<div class="">
+  <button style="float: right;margin-top: -30px" class="btn btn-success shadow" (click)="open(createObject, '', '')">
+    <i
+      class="fa fa-plus-circle"></i> Create Object
+  </button>
+  <br>
+  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+         style="width: 100% !important;"
+         class="table table-bordered table-striped table-hover">
+    <thead class="back_table_color text-center">
+    <tr class="info">
+      <th>Name</th>
+      <th>Type</th>
+      <th>Image</th>
+      <th>Status</th>
+      <th style="max-width: 50px">Action</th>
+    </tr>
+    </thead>
+    <tbody *ngIf="objects?.length != 0" style="font-size: 15px">
+    <tr *ngFor="let s of objects" class="text-center">
+      <td class="text-left">{{ s.name }}</td>
+      <td class="text-left">{{ s.answer }}</td>
+      <td class="text-left"><img src="{{'data:image/jpg;base64,' + s.image}}" class="card-img-top"
+                                 style="width: 100px" alt="...">
+      </td>
+      <td class="text-center">{{ s.active == '1' ? 'Active' : 'Inactive' }}</td>
+      <td>
+        <span style="margin-right: 10px;cursor: pointer" class="text-primary"
+              (click)="open(updateObject, s.id, s.name)"><i class="fa fa-edit"> </i></span>
+        <!--        <span class="text-danger" style="margin-right: 10px;cursor: pointer"><i class="fa fa-trash"> </i> </span>-->
+      </td>
+    </tr>
+    </tbody>
+    <tbody *ngIf="objects?.length == 0">
+    <tr>
+      <td colspan="5" class="no-data-available text-center">No data Found!</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #createObject let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Create Sentence</h5>
+    <button class="btn-close btn btn-danger" aria-label="Close" (click)="modal.dismiss()">X</button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="Object Name" #object_name>
+    </div>
+    <div class="form-group">
+      <select class="form-control" #object_type>
+        <option value="SINK">SINK</option>
+        <option value="SWIM">SWIM</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <input type="file" class="form-control" #object_image
+             (change)="onUploadChange(object_image.files[0])">>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-outline-success" (click)="create(object_name.value, object_type.value)">
+      Create
+    </button>
+  </div>
+</ng-template>
+
+
+<ng-template #updateObject let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Update Sentence</h5>
+    <button class="btn-close btn btn-danger" aria-label="Close" (click)="modal.dismiss()">X</button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="Object Name" #object_name_update value="{{objectName}}">
+    </div>
+    <div class="form-group">
+      <select class="form-control" #object_type_update>
+        <option value="SINK" [selected]="objectType == 'SINK'">SINK</option>
+        <option value="SWIM" [selected]="objectType == 'SWIM'">SWIM</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <input type="file" class="form-control" #object_image_update
+             (change)="onUploadChange(object_image_update.files[0])">
+      <img src="{{'data:image/jpg;base64,' + objectImage}}" class="card-img-top"
+           style="width: 100px;margin: 0 auto" alt="...">
+    </div>
+
+    <div class="form-group">
+      <select class="form-control" #object_status_update>
+        <option value="1" [selected]="objectStatus == '1'">Active</option>
+        <option value="0" [selected]="objectStatus == '0'">Inactive</option>
+      </select>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-outline-success"
+            (click)="update(object_name_update.value,object_type_update.value, object_status_update.value, objectId)">Update
+    </button>
+  </div>
+</ng-template>

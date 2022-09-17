@@ -1,0 +1,71 @@
+<ngx-spinner fullScreen="false">
+  <p style="font-size: 20px; color: white">Please wait ...</p>
+</ngx-spinner>
+<div class="">
+  <button style="float: right;margin-top: -30px" class="btn btn-success shadow" (click)="open(createSentence, '', '')"><i
+    class="fa fa-plus-circle"></i> Create Sentence
+  </button>
+  <br>
+  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+         style="width: 100% !important;"
+         class="table table-bordered table-striped table-hover">
+    <thead class="back_table_color text-center">
+    <tr class="info">
+      <th>Sentence</th>
+      <th>Status</th>
+      <th style="max-width: 50px">Action</th>
+    </tr>
+    </thead>
+    <tbody *ngIf="sentences?.length != 0" style="font-size: 15px">
+    <tr *ngFor="let s of sentences" class="text-center">
+      <td class="text-left">{{ s.sentence }}</td>
+      <td class="text-center">{{ s.active == '1' ? 'Active' : 'Inactive' }}</td>
+      <td>
+        <span style="margin-right: 10px;cursor: pointer" class="text-primary" (click)="open(updateSentence, s.id, '')"><i class="fa fa-edit"> </i></span>
+<!--        <span class="text-danger" style="margin-right: 10px;cursor: pointer"><i class="fa fa-trash"> </i> </span>-->
+      </td>
+    </tr>
+    </tbody>
+    <tbody *ngIf="sentences?.length == 0">
+    <tr>
+      <td colspan="3" class="no-data-available text-center">No data Found!</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #createSentence let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Create Sentence</h5>
+    <button class="btn-close btn btn-danger" aria-label="Close" (click)="modal.dismiss()">X</button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <textarea class="form-control" maxlength="75" #sentence_text></textarea>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-outline-success" (click)="create(sentence_text.value)">Create</button>
+  </div>
+</ng-template>
+
+
+<ng-template #updateSentence let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Update Sentence</h5>
+    <button class="btn-close btn btn-danger" aria-label="Close" (click)="modal.dismiss()">X</button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <textarea class="form-control" maxlength="75" #sentence_text_update>{{sentenceText}}</textarea>
+      <br>
+      <select class="form-control" #sentence_status>
+        <option value="1" [selected]="sentenceStatus == '1'">Active</option>
+        <option value="0" [selected]="sentenceStatus == '0'">Inactive</option>
+      </select>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-sm btn-outline-success" (click)="update(sentence_text_update.value,sentence_status.value, sentenceId)">Update</button>
+  </div>
+</ng-template>

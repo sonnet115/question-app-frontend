@@ -85,8 +85,10 @@ export class QuestionSetsComponent implements OnInit {
         this.spinner.hide();
         console.log(response);
         this.questionSets = response;
+        this.modalService.dismissAll();
       },
       error => {
+        this.modalService.dismissAll();
         this.spinner.hide();
       }
     );

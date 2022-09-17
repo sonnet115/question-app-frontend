@@ -2,7 +2,7 @@ import {Component, AfterViewInit, EventEmitter, Output, OnInit} from '@angular/c
 import {PerfectScrollbarConfigInterface} from 'ngx-perfect-scrollbar';
 import {Router} from '@angular/router';
 import {CommonService} from '../common.service';
-import { LoggerService } from 'src/app/shared/logger.service';
+import {LoggerService} from 'src/app/shared/logger.service';
 
 declare var $: any;
 
@@ -37,17 +37,6 @@ export class NavigationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getAvailableBalance();
-  }
-
-  public getAvailableBalance(): void {
-    this.commonService.availableBalance().subscribe((response: any) => {
-        this.commonService.available_balance = response.toFixed(2);
-        this.available_balance = this.commonService.available_balance;
-      },
-      error => {
-        this.loggerService.log('error', error);
-      });
   }
 
   logout() {

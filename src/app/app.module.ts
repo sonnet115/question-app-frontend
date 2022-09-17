@@ -56,6 +56,10 @@ import { QuestionsComponent } from './questions/questions.component';
 import {EndPointsQ} from './questions/EndPointsQ';
 import { QuestionListComponent } from './question-list/question-list.component';
 import { UpdateQuestionComponent } from './update-question/update-question.component';
+import { ManageSentencesComponent } from './manage-sentences/manage-sentences.component';
+import { ManageSinkSwimComponent } from './manage-sink-swim/manage-sink-swim.component';
+import {DialogService} from './shared/_modal/dialog.service';
+import {DialogModalComponent} from './shared/_modal/dialog-modal/dialog-modal.component';
 
 registerLocaleData(localeFr);
 
@@ -71,7 +75,10 @@ registerLocaleData(localeFr);
     QuestionSetsComponent,
     QuestionsComponent,
     QuestionListComponent,
-    UpdateQuestionComponent
+    UpdateQuestionComponent,
+    ManageSentencesComponent,
+    ManageSinkSwimComponent,
+    DialogModalComponent
   ],
     imports: [
         CommonModule,
@@ -111,6 +118,7 @@ registerLocaleData(localeFr);
     CommonService,
     EndPointsQS,
     EndPointsQ,
+    DialogService,
     {
       provide: PERFECT_SCROLLBAR_CONFIG,
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG

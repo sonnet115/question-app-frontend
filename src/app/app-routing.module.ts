@@ -7,6 +7,8 @@ import {QuestionSetsComponent} from './question-sets/question-sets.component';
 import {QuestionsComponent} from './questions/questions.component';
 import {QuestionListComponent} from './question-list/question-list.component';
 import {UpdateQuestionComponent} from './update-question/update-question.component';
+import {ManageSentencesComponent} from './manage-sentences/manage-sentences.component';
+import {ManageSinkSwimComponent} from './manage-sink-swim/manage-sink-swim.component';
 
 export const Approutes: Routes = [
   {
@@ -63,6 +65,28 @@ export const Approutes: Routes = [
       {
         path: 'question-update',
         component: UpdateQuestionComponent,
+        canActivate: [AuthGuard]
+      }
+    ]
+  },
+  {
+    path: '',
+    component: FullComponent,
+    children: [
+      {
+        path: 'manage-sentence',
+        component: ManageSentencesComponent,
+        canActivate: [AuthGuard]
+      }
+    ]
+  },
+  {
+    path: '',
+    component: FullComponent,
+    children: [
+      {
+        path: 'manage-sink-swim',
+        component: ManageSinkSwimComponent,
         canActivate: [AuthGuard]
       }
     ]
